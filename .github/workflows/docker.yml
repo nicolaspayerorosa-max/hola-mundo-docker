@@ -24,7 +24,8 @@ jobs:
 
       - name: Ejecutar pruebas
         run: |
-         python -m pytest src/test_api.py
+          python -m pytest src/test_api.py
+
       - name: Iniciar sesión en Docker Hub
         uses: docker/login-action@v3
         with:
