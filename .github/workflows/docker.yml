@@ -1,0 +1,41 @@
+name: CI/CD Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r src/requirements.txt
+
+      - name: Ejecutar pruebas
+        run: |
+          pytest src/test_api.py
+
+      - name: Iniciar sesión en Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Construir imagen Docker
+        run: |
+          docker build -t 20251151/hola-mundo-flask:latest ./src
+
+      - name: Subir imagen a Docker Hub
+        run: |
+          docker push 20251151/hola-mundo-flask:latest
